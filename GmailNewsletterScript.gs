@@ -1,6 +1,8 @@
-// TODO: Plan which other newsletter emails to query for this script
+// TODO: Include event scheduled for March 25
+// TODO: Plan which other newsletter emails to query for this script - i.e. Firebase newsletter, Google Developers blog, and etc.
 // TODO: Remove duplicates from arrays
 // TODO: Possibly integrate with Google Docs for formatting (i.e. spacing in-between paragraphs, font, and etc.)?
+// TODO: Modify Flutter regexes a bit so that the double asterisks (bold-style encoding) are not included in the draft
 
 // Despite Apps Script being based on JS, classes aren't supported 
 // yet on this engine. That said, here's an anonymous "class" used 
@@ -50,7 +52,8 @@ var artAndTutRegexAndroid = /(\*\* Articles & Tutorials[\s\S]*?)(?:\r?\n){3}/;
 var newsRegexAndroid = /(\*\* News[\s\S]*?)(?:\r?\n){3}/;
 var specialsRegexAndroid = /(\*\* Specials[\s\S]*?)(?:\r?\n){3}/;
 
-// TODO: Not the prettiest regex for the Flutter Weekly newsletter, but gets the job done for now
+// TODO: Not the prettiest regexs for the Flutter Weekly newsletter, but gets the job done for now
+var announcementRegexFlutter = /\*\* Announcements[\s\S]*?\*\* Articles and tutorials/;
 var artAndTutRegexFlutter = /\*\* Articles and tutorials[\s\S]*?\*\* Videos and media/;
 
 // URL regex, and a regex for the title of a post (matches sequential
@@ -135,8 +138,9 @@ function searchAndroidWeekly() {
   }
 }
 
-// This function will basically store the top article & tutorial of each 
-// Flutter Weekly newsletter.
+// If any, this function will basically store the top article & tutorial  
+// while prioritizing and storing all announcements from each Flutter 
+// Weekly newsletter.
 function searchFlutterWeekly() {
   var query = "in:inbox subject:(Flutter Weekly) newer_than:30d";
   var threads = GmailApp.search(query);
@@ -144,6 +148,15 @@ function searchFlutterWeekly() {
   for each (thread in threads) {    
     var messages = thread.getMessages();
     var body = messages[0].getPlainBody();
+    
+    var containsAnnouncements = announcementRegexFlutter.test(body);
+    if (containsAnnouncements) {
+      var matches = announcementRegexFlutter.exec(body);
+      var elements = matches[0].split("\n");
+      var filteredElements = getFilteredElementsFlutter(elements);      
+      
+      pushPostsIntoAnnouncements(filteredElements, announcementArray);
+    }
     
     var containsArtAndTut = artAndTutRegexFlutter.test(body);
     if (containsArtAndTut) {
@@ -255,6 +268,11 @@ function getFilteredElementsFlutter(elements) {
     // are bold headers.
     var startCharRegex = /^[a-zA-Z\*]/;
     var startsWithChar = startCharRegex.test(item);
+    
+    // Excludes the "Announcements" header that was originally part of the 
+    // regex match.
+    var announcementHeadRegex = /\*\* Announcements/;
+    var containsAnnouncementHead = announcementHeadRegex.test(item);    
         
     // Excludes the header that was originally part of the regex match.
     var artAndTutHeadRegex = /\*\* Articles and tutorials/;
@@ -265,7 +283,7 @@ function getFilteredElementsFlutter(elements) {
     var sponsRegex = /Sponsored/;
     var containsSponsTxt = sponsRegex.test(item);
         
-    var isLegitimatePost = startsWithChar && !containsArtAndTutHead && !containsSponsTxt
+    var isLegitimatePost = startsWithChar && !containsAnnouncementHead && !containsArtAndTutHead && !containsSponsTxt
     return isLegitimatePost;
   });
   
