@@ -1,12 +1,22 @@
-// TODO: Include event scheduled for March 25
 // TODO: Plan which other newsletter emails to query for this script - i.e. Firebase newsletter, Google Developers blog, and etc.
-// TODO: Remove duplicates from arrays
-// TODO: Possibly integrate with Google Docs for formatting (i.e. spacing in-between paragraphs, font, and etc.)?
+// TODO: Possibly integrate with Google Docs for formatting (i.e. spacing in-between paragraphs, font, and etc.), or simply apply HTML-encoded formatting?
 // TODO: Modify Flutter regexes a bit so that the double asterisks (bold-style encoding) are not included in the draft
 
+// TODO: Potential things to include for the next (May) newsletter:
+// - DevFest DC @ CapOne announcement with promo code: "DEVALUM" (https://www.eventbrite.com/e/devfest-dc-2019-tickets-58835481509?aff=bloomshift&discount=devAlum&mc_eid=03e6c7e8bc&mc_cid=94794428e4)
+// - DevFest DC schedule (https://www.devfestdc.org/schedule/?utm_source=newsletter&utm_medium=email&utm_campaign=nonpaid/&mc_cid=567aadd5f6&mc_eid=03e6c7e8bc)
+// - Google I/O recap videos
+// - TF meetup (https://www.meetup.com/gdg-dc/events/261082799)
+// - Flutter International Hackathon (https://flutterhackathon.com)
+// - First DCFlutter meetup (https://www.meetup.com/DCFlutter/events/261853524)
+// - Donn's Flutter article (https://www.donnfelker.com/flutter-just-might-work)
+// - Android Summit 2019 (https://www.androidsummit.org/ ; 50% DISCOUNT courtesty of WWCODE https://www.eventbrite.com/e/android-summit-2019-tickets-59378886849?discount=wwcode50)
+// - Google Cloud Next video recordings (most likely on YouTube)
+// - ... and of course some other relevant content from the previous newsletter drafts
+
 // Despite Apps Script being based on JS, classes aren't supported 
-// yet on this engine. That said, here's an anonymous "class" used 
-// instead.
+// yet (as of now) on this engine. That said, here's an anonymous 
+// "class" used instead.
 var Post = function(url, title, description) {
   this.url = url;
   this.title = title;
@@ -32,7 +42,8 @@ var monthNames = ["January", "February", "March", "April", "May", "June",
 var disclaimer = "\/\*\* This draft was initially run and created by Google Apps Script \*\*\/";
 var greeting = "Greetings Fellow Googlers,";
 var callForTalksHeader = "Call for Talks";
-var upcomingEventsHeader = "Upcoming Events";
+var dcGdgEventsHeader = "GDG-DC Upcoming Events";
+var otherEventsHeader = "Other Upcoming Events";
 var newsMediaHeader = "News/Media";
 var callForTalksBody = "What\'s first is first - if you\'re ever interested in giving a talk on a Google-related technology sometime soon, please don\'t hesitate to ask! We\'re very open about it.";
 var salutation = "Best,";
@@ -182,28 +193,29 @@ function searchFlutterWeekly() {
 function createDraft() {
   var date = new Date();
   var month = "";
-  if (date.getMonth() == monthNames.length - 1) { // Iterates back to January when reaching the end
+  if (date.getMonth() === monthNames.length - 1) { // Iterates back to January when reaching the end
     month = monthNames[0];
   } else { // Otherwise, assigns the next upcoming month
     month = monthNames[date.getMonth() + 1];
   }
   var subject = Utilities.formatString("GDG-DC %s Newsletter Draft", month);
 
-  var encodedBody = Utilities.formatString("<i>%s</i><br />&nbsp;<br />%s<br />&nbsp;<br /><b>%s</b><br />&nbsp;<br />%s<br />&nbsp;<br /><b>%s</b><br />&nbsp;<br /><i>// TODO: Fill out manually</i><br />&nbsp;<br /><b>%s</b><br />&nbsp;<br />", 
+  var encodedBody = Utilities.formatString("<i>%s</i><br />&nbsp;<br />%s<br />&nbsp;<br /><b>%s</b><br />&nbsp;<br />%s<br />&nbsp;<br /><b>%s</b><br />&nbsp;<br /><i>// TODO: Fill out manually</i><br />&nbsp;<br /><b>%s</b><br />&nbsp;<br /><i>// TODO: Fill out manually</i><br />&nbsp;<br /><b>%s</b><br />&nbsp;<br />", 
                                     disclaimer,
                                     greeting, 
                                     callForTalksHeader, 
                                     callForTalksBody, 
-                                    upcomingEventsHeader, 
+                                    dcGdgEventsHeader, 
+                                    otherEventsHeader, 
                                     newsMediaHeader
                                    );
   
   for each (post in announcementArray) {
     var htmlEncoding = Utilities.formatString(
       "\-<a href=%s>%s</a>: %s<br />&nbsp;<br />", 
-      post.url, 
-      post.title, 
-      post.description
+      post.url || "", 
+      post.title || "", 
+      post.description || ""
     );
     
     encodedBody += htmlEncoding;
@@ -212,9 +224,9 @@ function createDraft() {
   for each (post in mediaArray) {
     var htmlEncoding = Utilities.formatString(
       "\-<a href=%s>%s</a>: %s<br />&nbsp;<br />", 
-      post.url, 
-      post.title, 
-      post.description
+      post.url || "", 
+      post.title || "", 
+      post.description || ""
     );
     
     encodedBody += htmlEncoding;
