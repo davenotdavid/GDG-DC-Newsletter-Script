@@ -247,8 +247,61 @@ function createDraft() {
   // Here's where the magic happens.
   GmailApp.createDraft(jared, subject, "Body to be replaced", {
     cc: chida,
-    htmlBody: encodedBody
+    htmlBody: getEncodedHtml()
   });
+}
+
+function getEncodedHtml() {
+  var html = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body style="font-family: Verdana, sans-serif; font-size: 9pt; line-height: 1.15;">%s</body></html>';
+  
+  var encodedBody = Utilities.formatString("<i>%s</i><br />%s<br /><b>%s</b><br />%s<br /><b>%s</b><br /><i>// TODO: Fill out manually</i><br /><b>%s</b><br /><i>// TODO: Fill out manually</i><br /><b>%s</b><br />", 
+                                    disclaimer,
+                                    greeting, 
+                                    callForTalksHeader, 
+                                    callForTalksBody,
+                                    dcGdgEventsHeader, 
+                                    otherEventsHeader, 
+                                    newsMediaHeader
+                                   );
+  
+  for each (post in announcementArray) {
+    var htmlEncoding = Utilities.formatString(
+      "\-<a href=%s>%s</a>: %s<br />", 
+      post.url || "", 
+      post.title || "", 
+      post.description || ""
+    );
+    
+    encodedBody += htmlEncoding;
+  }
+
+  for each (post in mediaArray) {
+    var htmlEncoding = Utilities.formatString(
+      "\-<a href=%s>%s</a>: %s<br />", 
+      post.url || "", 
+      post.title || "", 
+      post.description || ""
+    );
+    
+    encodedBody += htmlEncoding;
+  }
+  
+  var salutationTxt = Utilities.formatString("%s<br />%s<br><a href=%s>%s</a><br><a href=%s>%s</a><br><a href=%s>%s</a>", 
+                                             salutation, 
+                                             sender, 
+                                             gdgDcHandleUrl, 
+                                             gdgDcHandle, 
+                                             gdgDcFacebookUrl, 
+                                             gdgDcFacebook, 
+                                             gdgDcYouTubeUrl, 
+                                             gdgDcYouTube
+                                            );
+  encodedBody += salutationTxt;
+  
+  var encodedHtml = Utilities.formatString(html, encodedBody);
+  Logger.log('Encoded HTML: ' + encodedHtml);
+  
+  return encodedHtml;
 }
 
 // End Region
