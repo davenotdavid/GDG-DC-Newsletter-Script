@@ -1,6 +1,4 @@
-// TODO: Plan which other newsletter emails to query for this script - i.e. Firebase newsletter, Google Developers blog, and etc.
-// TODO: Possibly integrate with Google Docs for formatting (i.e. spacing in-between paragraphs, font, and etc.), or simply apply HTML-encoded formatting?
-// TODO: Modify Flutter regexes a bit so that the double asterisks (bold-style encoding) are not included in the draft
+// TODO: Plan which other newsletter emails to query for this script - i.e. GCP Newsletter, Firebase newsletter, Google Developers blog, and etc.
 
 // TODO: Potential things to include for the next (May) newsletter:
 // - DevFest DC @ CapOne announcement with promo code: "DEVALUM" (https://www.eventbrite.com/e/devfest-dc-2019-tickets-58835481509?aff=bloomshift&discount=devAlum&mc_eid=03e6c7e8bc&mc_cid=94794428e4)
@@ -199,50 +197,6 @@ function createDraft() {
     month = monthNames[date.getMonth() + 1];
   }
   var subject = Utilities.formatString("GDG-DC %s Newsletter Draft", month);
-
-  var encodedBody = Utilities.formatString("<i>%s</i><br />&nbsp;<br />%s<br />&nbsp;<br /><b>%s</b><br />&nbsp;<br />%s<br />&nbsp;<br /><b>%s</b><br />&nbsp;<br /><i>// TODO: Fill out manually</i><br />&nbsp;<br /><b>%s</b><br />&nbsp;<br /><i>// TODO: Fill out manually</i><br />&nbsp;<br /><b>%s</b><br />&nbsp;<br />", 
-                                    disclaimer,
-                                    greeting, 
-                                    callForTalksHeader, 
-                                    callForTalksBody, 
-                                    dcGdgEventsHeader, 
-                                    otherEventsHeader, 
-                                    newsMediaHeader
-                                   );
-  
-  for each (post in announcementArray) {
-    var htmlEncoding = Utilities.formatString(
-      "\-<a href=%s>%s</a>: %s<br />&nbsp;<br />", 
-      post.url || "", 
-      post.title || "", 
-      post.description || ""
-    );
-    
-    encodedBody += htmlEncoding;
-  }
-
-  for each (post in mediaArray) {
-    var htmlEncoding = Utilities.formatString(
-      "\-<a href=%s>%s</a>: %s<br />&nbsp;<br />", 
-      post.url || "", 
-      post.title || "", 
-      post.description || ""
-    );
-    
-    encodedBody += htmlEncoding;
-  }
-  
-  var salutationTxt = Utilities.formatString("%s<br />&nbsp;<br />%s<br><a href=%s>%s</a><br><a href=%s>%s</a><br><a href=%s>%s</a>", 
-                                             salutation, 
-                                             sender, 
-                                             gdgDcHandleUrl, 
-                                             gdgDcHandle, 
-                                             gdgDcFacebookUrl, 
-                                             gdgDcFacebook, 
-                                             gdgDcYouTubeUrl, 
-                                             gdgDcYouTube
-                                            );
-  encodedBody += salutationTxt;
   
   // Here's where the magic happens.
   GmailApp.createDraft(jared, subject, "Body to be replaced", {
