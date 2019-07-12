@@ -1,13 +1,8 @@
 // TODO: Plan which other newsletter emails to query for this script - i.e. GCP Newsletter, Firebase newsletter, Google Developers blog, and etc.
 
-// TODO: Potential things to include for the next (May) newsletter:
-// - DevFest DC @ CapOne announcement with promo code: "DEVALUM" (https://www.eventbrite.com/e/devfest-dc-2019-tickets-58835481509?aff=bloomshift&discount=devAlum&mc_eid=03e6c7e8bc&mc_cid=94794428e4)
-// - DevFest DC schedule (https://www.devfestdc.org/schedule/?utm_source=newsletter&utm_medium=email&utm_campaign=nonpaid/&mc_cid=567aadd5f6&mc_eid=03e6c7e8bc)
+// TODO: Potential things to include for the next (August) newsletter:
+// - DevFestDC recap videos/content (https://www.youtube.com/watch?v=oYQh0ZR0Lec for starters)
 // - Google I/O recap videos
-// - TF meetup (https://www.meetup.com/gdg-dc/events/261082799)
-// - Flutter International Hackathon (https://flutterhackathon.com)
-// - First DCFlutter meetup (https://www.meetup.com/DCFlutter/events/261853524)
-// - Donn's Flutter article (https://www.donnfelker.com/flutter-just-might-work)
 // - Android Summit 2019 (https://www.androidsummit.org/ ; 50% DISCOUNT courtesty of WWCODE https://www.eventbrite.com/e/android-summit-2019-tickets-59378886849?discount=wwcode50)
 // - Google Cloud Next video recordings (most likely on YouTube)
 // - ... and of course some other relevant content from the previous newsletter drafts
@@ -40,7 +35,7 @@ var monthNames = ["January", "February", "March", "April", "May", "June",
 var disclaimer = "\/\*\* This draft was initially run and created by Google Apps Script \*\*\/";
 var greeting = "Greetings Fellow Googlers,";
 var callForTalksHeader = "Call for Talks";
-var dcGdgEventsHeader = "GDG-DC Upcoming Events";
+var mainEventsHeader = "Main Affiliated Upcoming Events";
 var otherEventsHeader = "Other Upcoming Events";
 var newsMediaHeader = "News/Media";
 var callForTalksBody = "What\'s first is first - if you\'re ever interested in giving a talk on a Google-related technology sometime soon, please don\'t hesitate to ask! We\'re very open about it.";
@@ -213,7 +208,7 @@ function getEncodedHtml() {
                                     greeting, 
                                     callForTalksHeader, 
                                     callForTalksBody,
-                                    dcGdgEventsHeader, 
+                                    mainEventsHeader, 
                                     otherEventsHeader, 
                                     newsMediaHeader
                                    );
